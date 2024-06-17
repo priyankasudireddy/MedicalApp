@@ -36,6 +36,8 @@ namespace HospitalAPI.Controllers
             }
             return Ok(doctor);
         }
+
+        //Post Doctor
         [HttpPost]
 
         public ActionResult<Doctors> Post([FromBody] Doctors doctor)
