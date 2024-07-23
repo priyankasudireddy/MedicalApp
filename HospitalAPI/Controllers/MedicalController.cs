@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HospitalAPI.Classes;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HospitalAPI.Controllers
 {
@@ -7,6 +9,12 @@ namespace HospitalAPI.Controllers
     [ApiController]
     public class MedicalController : ControllerBase
     {
+        private readonly AppDbContext _context;
+
+        public MedicalController(AppDbContext context)
+        {
+            _context = context;
+        }
         private static List<Doctors> doctors = new List<Doctors>
      {
          // Testing git second time
@@ -18,6 +26,7 @@ namespace HospitalAPI.Controllers
         [HttpGet]
         public ActionResult<List<Doctors>> Get()
         {
+            var doctors = _context.Doctors.ToList();
             if (doctors == null)
             {
                 return NotFound();
@@ -29,7 +38,7 @@ namespace HospitalAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<Doctors> Get(int id)
         {
-            var doctor = doctors.FirstOrDefault(d => d.Id == id);
+            var doctor = _context.Doctors.FirstOrDefault(d => d.Id == id);
             if (doctor == null)
             {
                 return NotFound();
@@ -40,12 +49,24 @@ namespace HospitalAPI.Controllers
         //Post Doctor
         [HttpPost]
 
-        public ActionResult<Doctors> Post([FromBody] Doctors doctor)
+        public ActionResult Post([FromBody] Doctors doctor)
         {
-            doctor.Id = doctors.Count + 1;
-            doctors.Add(doctor);
+
+            //doctor.Id = doctors.Count + 1;
+            //doctors.Add(doctor);
             //return CreatedAtRoute("GetDoctor", new { id = doctor.Id }, doctor);
-            return doctor;
+            //return doctor;
+            try
+            {
+                _context.Doctors.Add(doctor);
+               var response= _context.SaveChanges();
+                return Ok(response);
+                //return CreatedAtAction(nameof(Get), new { id = doctor.Id }, doctor);
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
 
         }
 
@@ -54,7 +75,7 @@ namespace HospitalAPI.Controllers
         [HttpPut("{id}")]
         public ActionResult<Doctors> Put(int id, [FromBody] Doctors doctor)
         {
-            var existingDoctor = doctors.FirstOrDefault(d => d.Id == id);
+            var existingDoctor = _context.Doctors.FirstOrDefault(d => d.Id == id);
             if (existingDoctor == null)
             {
                 return NotFound();
@@ -69,6 +90,8 @@ namespace HospitalAPI.Controllers
             existingDoctor.City = doctor.City;
             existingDoctor.state = doctor.state;
             existingDoctor.ZipCode = doctor.ZipCode;
+            _context.Doctors.Update(existingDoctor);
+            var response = _context.SaveChanges();
             return Ok(existingDoctor);
 
         }
@@ -76,13 +99,14 @@ namespace HospitalAPI.Controllers
         [HttpDelete]
         public ActionResult Delete(int id)
         {
-            var doctor = doctors.FirstOrDefault(d => d.Id == id);
+            var doctor = _context.Doctors.FirstOrDefault(d => d.Id == id);
             if (doctor == null)
             {
                 return NotFound();
             }
-            doctors.Remove(doctor);
-            return Ok(doctor);
+          _context.Doctors.Remove(doctor);
+            var response = _context.SaveChanges();
+            return Ok(response);
         }
 
     }
