@@ -1,9 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HospitalAPI.Classes;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 
 namespace HospitalAPI.Controllers
 {
     public class Hospital_ManagmentController : Controller
     {
+        private readonly AppDbContext _context;
+        public Hospital_ManagmentController(AppDbContext context)
+        {
+            _context = context;
+
+        }
         private static List<Facility> Facility = new List<Facility>
         {
             // Sample Information
@@ -26,7 +35,20 @@ namespace HospitalAPI.Controllers
 
         [HttpPost("{FacilityId}/ward")]
         public async Task<ActionResult<EyeWard>> AddWard([FromBody] EyeWard ward)
+
+
         {
+            try
+            {
+                _context.Wards.Add(ward);
+                var response = _context.SaveChanges();
+                return Ok(response);
+                //return CreatedAtAction(nameof(Get), new { id = doctor.Id }, doctor);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
             return Ok("Ward added successfully");
         }
         [HttpPut("{wardId}/ward")]
@@ -69,6 +91,18 @@ namespace HospitalAPI.Controllers
         [HttpPost("{wardId}/rooms")]
         public IActionResult AddRoom(int wardId, [FromBody] RoomModel room)
         {
+            try
+            {
+                _context.Room.Add(room);
+                var response = _context.SaveChanges();
+                return Ok(response);
+                //return CreatedAtAction(nameof(Get), new { id = doctor.Id }, doctor);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
             return Ok($"Room added to ward {wardId} successfully");
         }
         [HttpPut("{wardId}/rooms")]
@@ -112,6 +146,17 @@ namespace HospitalAPI.Controllers
         [HttpPost("{roomId}/equipment")]
         public IActionResult AddEquipment(int roomId, [FromBody] EquipmentType equipment)
         {
+            try
+            {
+                _context.EquipmentTypes.Add(equipment);
+                var response = _context.SaveChanges();
+                return Ok(response);
+                //return CreatedAtAction(nameof(Get), new { id = doctor.Id }, doctor);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
             return Ok($"Equipment added to room {roomId} successfully");
         }
         [HttpPut("{wardId}/equipment")]
@@ -155,6 +200,17 @@ namespace HospitalAPI.Controllers
         [HttpPost("{roomId}/StaffMember")]
         public IActionResult AddStaff([FromBody] StaffMember staff)
         {
+            try
+            {
+                _context.StaffMembers.Add(staff);
+                var response = _context.SaveChanges();
+                return Ok(response);
+                //return CreatedAtAction(nameof(Get), new { id = doctor.Id }, doctor);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
 
             return Ok("Staff member added successfully");
         }
