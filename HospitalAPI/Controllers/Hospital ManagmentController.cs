@@ -34,16 +34,17 @@ namespace HospitalAPI.Controllers
         }
 
         [HttpPost("{FacilityId}/ward")]
-        public async Task<ActionResult<EyeWard>> AddWard([FromBody] EyeWard ward)
+        public async Task<ActionResult<EyeWard>> postWard(EyeWard ward)
 
 
         {
             try
             {
                 _context.Wards.Add(ward);
+                await _context.SaveChangesAsync();
                 var response = _context.SaveChanges();
-                return Ok(response);
-                //return CreatedAtAction(nameof(Get), new { id = doctor.Id }, doctor);
+                return CreatedAtAction(nameof(Getward), new { id = ward.Ward }, ward);
+                
             }
             catch (Exception ex)
             {
@@ -51,7 +52,7 @@ namespace HospitalAPI.Controllers
             }
             return Ok("Ward added successfully");
         }
-        [HttpPut("{wardId}/ward")]
+        [HttpPut("{FacilityId}/ward")]
         public IActionResult UpdateWard(int wardId, [FromBody] EyeWard ward)
         {
             var existingWard = Facility.FirstOrDefault(w => w.Ward == wardId);
@@ -67,7 +68,7 @@ namespace HospitalAPI.Controllers
             return Ok($"Ward with ID {wardId} updated successfully");
         }
 
-        [HttpDelete("{wardId}/ward")]
+        [HttpDelete("{FacilityId}/ward")]
         public IActionResult DeleteWard(int wardId)
         {
 
@@ -95,8 +96,8 @@ namespace HospitalAPI.Controllers
             {
                 _context.Room.Add(room);
                 var response = _context.SaveChanges();
-                return Ok(response);
-                //return CreatedAtAction(nameof(Get), new { id = doctor.Id }, doctor);
+                return CreatedAtAction(nameof(Getroom), new { id = room.Room }, room);
+               
             }
             catch (Exception ex)
             {
@@ -150,8 +151,8 @@ namespace HospitalAPI.Controllers
             {
                 _context.EquipmentTypes.Add(equipment);
                 var response = _context.SaveChanges();
-                return Ok(response);
-                //return CreatedAtAction(nameof(Get), new { id = doctor.Id }, doctor);
+                return CreatedAtAction(nameof(Getequipment), new { id = equipment.Equipment }, equipment);
+              
             }
             catch (Exception ex)
             {
@@ -159,7 +160,7 @@ namespace HospitalAPI.Controllers
             }
             return Ok($"Equipment added to room {roomId} successfully");
         }
-        [HttpPut("{wardId}/equipment")]
+        [HttpPut("{roomId}/equipment")]
         public IActionResult UpdateEquipment(int wardId, [FromBody] EyeWard ward)
         {
             var existingWard = Facility.FirstOrDefault(w => w.Ward == wardId);
@@ -175,7 +176,7 @@ namespace HospitalAPI.Controllers
             return Ok($"Ward with ID {wardId} updated successfully");
         }
 
-        [HttpDelete("{wardId}/equipment")]
+        [HttpDelete("{roomId}/equipment")]
         public IActionResult DeleteEquipment(int wardId)
         {
 
@@ -197,15 +198,15 @@ namespace HospitalAPI.Controllers
 
         }
 
-        [HttpPost("{roomId}/StaffMember")]
+        [HttpPost("{wardId}/StaffMember")]
         public IActionResult AddStaff([FromBody] StaffMember staff)
         {
             try
             {
                 _context.StaffMembers.Add(staff);
                 var response = _context.SaveChanges();
-                return Ok(response);
-                //return CreatedAtAction(nameof(Get), new { id = doctor.Id }, doctor);
+                return CreatedAtAction(nameof(Getstaff), new { id = staff.Staff }, staff);
+             
             }
             catch (Exception ex)
             {
