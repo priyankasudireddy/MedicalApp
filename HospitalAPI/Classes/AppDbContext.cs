@@ -11,5 +11,9 @@ namespace HospitalAPI.Classes
 
         }
         public DbSet<Doctors> Doctors { get; set; }
+        public DbSet<EyeWard> Wards { get; set; }
+        public DbSet<RoomModel> Room { get; set; }
+        public DbSet<EquipmentType> EquipmentTypes { get; set; }
+        public DbSet<StaffMember> StaffMembers { get; set; }
     }
 }
